@@ -34,7 +34,7 @@ mycursor.execute("
     city TEXT,
     state TEXT,
     pin_code VARCHAR(10),
-    image LONGBLOB)"
+    image LONGBLOB)")
 )
 
 # SETTING PAGE CONFIGURATIONS
