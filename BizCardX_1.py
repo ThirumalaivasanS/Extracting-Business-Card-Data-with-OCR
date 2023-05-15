@@ -2,14 +2,13 @@ import pandas as pd
 import streamlit as st
 import easyocr
 import mysql.connector as sql
-from PIL import Image
 import cv2
 import os
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 # INITIALIZING THE EasyOCR READER
-reader = easyocr.Reader(['en'])
+reader = easyocr.Reader(['en'], gpu=False)
 
 # CONNECTING WITH MYSQL DATABASE
 mydb = sql.connect(
@@ -22,24 +21,24 @@ mydb = sql.connect(
 mycursor = mydb.cursor(buffered=True)
 
 # TABLE CREATION
-mycursor.execute(
-    "CREATE TABLE IF NOT EXISTS card_data ("
-    "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-    "company_name TEXT,"
-    "card_holder TEXT,"
-    "designation TEXT,"
-    "mobile_number VARCHAR(50),"
-    "email TEXT,"
-    "website TEXT,"
-    "area TEXT,"
-    "city TEXT,"
-    "state TEXT,"
-    "pin_code VARCHAR(10),"
-    "image LONGBLOB)"
+mycursor.execute("
+    CREATE TABLE IF NOT EXISTS card_data (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    company_name TEXT,
+    card_holder TEXT,
+    designation TEXT,
+    mobile_number VARCHAR(50),
+    email TEXT,
+    website TEXT,
+    area TEXT,
+    city TEXT,
+    state TEXT,
+    pin_code VARCHAR(10),
+    image LONGBLOB)"
 )
 
 # SETTING PAGE CONFIGURATIONS
-st.set_page_config(page_title="BizCardX: Extracting Business Card Data with OCR | By TMV S",
+st.set_page_config(page_title="BizCardX: Extracting Business Card Data with OCR",
                    layout="wide",
                    initial_sidebar_state="expanded",
                    )
@@ -50,7 +49,7 @@ selected_menu = st.sidebar.radio("Select an option", ("Upload & Extract","Modify
 # UPLOAD AND EXTRACT MENU
 if selected_menu == "Upload & Extract":
     st.markdown("### Upload a Business Card")
-    uploaded_card = st.file_uploader("Upload an imageof maximum 200 MB", type=["png", "jpeg", "jpg"])
+    uploaded_card = st.file_uploader("Upload an imageof maximum 10 MB", type=["png", "jpeg", "jpg"])
         
     if uploaded_card is not None:
         
@@ -74,9 +73,6 @@ if selected_menu == "Upload & Extract":
         gray = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         extracted_text = reader.readtext(gray, detail=0)
          
-
-        extracted_text = reader.readtext(image, paragraph=True, decoder='wordbeamsearch')
-
         content=[]
         for i in extracted_text:
           content.append(i)
