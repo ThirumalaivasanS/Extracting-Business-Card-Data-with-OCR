@@ -35,7 +35,6 @@ mycursor.execute("
     state TEXT,
     pin_code VARCHAR(10),
     image LONGBLOB)")
-)
 
 # SETTING PAGE CONFIGURATIONS
 st.set_page_config(page_title="BizCardX: Extracting Business Card Data with OCR",
