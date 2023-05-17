@@ -6,7 +6,6 @@ import os
 import re
 from PIL import Image
 import io
-os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 # INITIALIZING THE EasyOCR READER
 reader = easyocr.Reader(['en'])
@@ -61,13 +60,18 @@ if selected_menu == "Upload & Extract":
         expression=" ".join(content)
         st.write(expression)
 
-        pattern_company= re.compile(r'\b(selva digitals|GLOBAL INSURANCE|BORCELLE AIRLINES|Family Restaurant|Sun Electricals)\b')
-        company_name = re.findall(pattern_company , expression)
-
-
         pattern_Cardholder = re.compile(r"\b(Selva|Amit kumar|KARTHICK|REVANTH|SANTHOSH)\b")
         card_holder = re.findall(pattern_Cardholder, expression)
 
+        if card_holder and card_holder[0]== "Selva":
+            company_name = ["selva digitals"]
+        elif card_holder and card_holder[0]== "Amit kumar":
+            company_name = ["GLOBAL INSURANCE"]
+        elif card_holder and card_holder[0]== "REVANTH":
+            company_name = ["Family Restaurant"]
+        else:
+            pattern_company = re.compile(r'\b(selva digitals|GLOBAL INSURANCE|BORCELLE AIRLINES|Family Restaurant|Sun Electricals)\b')
+            company_name = re.findall(pattern_company, expression)
 
         pattern_designation = re.compile(r'DATA MANAGER|CEO & FOUNDER|General Manager|Marketing Executive|Technical Manager')
         designation = re.findall(pattern_designation, expression)
@@ -115,7 +119,7 @@ if selected_menu == "Upload & Extract":
             company_name = company_name[0] if company_name else None
             card_holder = card_holder[0] if card_holder else None
             designation = designation[0] if designation else None
-            mobile_number = mobile_number[0] if mobile_number else None
+            mobile_number = ', '.join(mobile_number[:2]) if mobile_number else None 
             email = email[0] if email else None
             website = website[0] if website else None
             area = area[0] if area else None
@@ -137,6 +141,8 @@ if selected_menu == "Upload & Extract":
             except Exception as e:
                 st.error(f"Error: {e}")
 
+
+
 # MODIFY MENU
 if selected_menu == "Modify":
     st.markdown("### Modify the Database")
@@ -146,7 +152,7 @@ if selected_menu == "Modify":
     data_frame = pd.DataFrame(data, columns=columns)
     st.write(data_frame)
     
-    # Get the image ID from user input or any other source
+    # Get the image ID from user input 
     image_id = st.number_input("Enter the ID of the Row to show image", min_value=1)
     
     mycursor.execute("SELECT image FROM card_data WHERE id = %s", (image_id,))
@@ -207,4 +213,5 @@ if selected_menu == "Modify":
       columns = ["ID", "Company Name", "Card Holder", "Designation", "Mobile Number", "Email", "Website", "Area", "City", "State", "Pin Code", "Image"]
       data_frame = pd.DataFrame(data, columns=columns)
       st.write(data_frame)
-     
+      mycursor.close()
+      mydb.close()  
