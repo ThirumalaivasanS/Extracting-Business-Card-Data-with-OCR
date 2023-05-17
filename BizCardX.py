@@ -58,7 +58,7 @@ if selected_menu == "Upload & Extract":
         for i in extracted_text:
           content.append(i)
         expression=" ".join(content)
-        st.write(expression)
+       
 
         pattern_Cardholder = re.compile(r"\b(Selva|Amit kumar|KARTHICK|REVANTH|SANTHOSH)\b")
         card_holder = re.findall(pattern_Cardholder, expression)
