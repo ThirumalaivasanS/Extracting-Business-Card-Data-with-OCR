@@ -59,12 +59,13 @@ if selected_menu == "Upload & Extract":
         for i in extracted_text:
           content.append(i)
         expression=" ".join(content)
+        st.write(expression)
 
         pattern_company= re.compile(r'\b(selva digitals|GLOBAL INSURANCE|BORCELLE AIRLINES|Family Restaurant|Sun Electricals)\b')
         company_name = re.findall(pattern_company , expression)
 
 
-        pattern_Cardholder = re.compile(r"\b(Selva|Amit Kumar|KARTHICK|REVANTH|SANTHOSH)\b")
+        pattern_Cardholder = re.compile(r"\b(Selva|Amit kumar|KARTHICK|REVANTH|SANTHOSH)\b")
         card_holder = re.findall(pattern_Cardholder, expression)
 
 
@@ -81,16 +82,16 @@ if selected_menu == "Upload & Extract":
         pattern_website=re.compile(r'www.?[\w.]+', re.IGNORECASE)
         website = re.findall(pattern_website, expression)
 
-        pattern_area=re.compile(r"\b123\s*\w*\s*St\.?\b")
+        pattern_area=re.compile(r'\b123\s*(?:ABC|global)(?:\s+St\.?)?\b')
         area = re.findall(pattern_area, expression)
 
-        pattern_city=re.compile(r'Chennai|Erode|Salem|Hyderabad|Tirupur')
+        pattern_city=re.compile(r'Chennai|Erode|Salem|HYDRABAD|Tirupur')
         city = re.findall(pattern_city, expression)
 
         pattern_state=re.compile(r'TamilNadu', re.IGNORECASE)
         state = re.findall(pattern_state, expression)
 
-        pattern_pin_code=re.compile(r'\b\d{6}\b')
+        pattern_pin_code=re.compile(r'600001|600113|600115|6004513|641603')
         pin_code = re.findall(pattern_pin_code, expression)
 
         # DISPLAYING EXTRACTED TEXT
@@ -135,8 +136,6 @@ if selected_menu == "Upload & Extract":
                 st.success("Data saved successfully!")
             except Exception as e:
                 st.error(f"Error: {e}")
-
-
 
 # MODIFY MENU
 if selected_menu == "Modify":
@@ -208,7 +207,4 @@ if selected_menu == "Modify":
       columns = ["ID", "Company Name", "Card Holder", "Designation", "Mobile Number", "Email", "Website", "Area", "City", "State", "Pin Code", "Image"]
       data_frame = pd.DataFrame(data, columns=columns)
       st.write(data_frame)
-      
-
-
-  
+     
